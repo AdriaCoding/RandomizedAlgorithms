@@ -60,11 +60,12 @@ function master_dart(N)
     # Maximum size to call piecewise_dart(n)
     # 10^7 will consume approx 150MiB of memory in each call
     max_n = 10^6
-    global 🎯 = piecewise_dart(N%max_n)
-    for i in 1:(N/max_n)
-        global 🎯 += piecewise_dart(max_n)
+    if N <= max_n
+        return 4.0*piecewise_dart(N) / N
     end
-    return 4.0 * 🎯 / N    
+    🎯s = max_n*ones(Int, N ÷ max_n + 1)
+    🎯s[1] = N % max_n
+    return mapreduce(n -> 4.0*piecewise_dart(n)/N, +, 🎯s)
 end
 
 time_darts(N) = @time darts_pi(N)
