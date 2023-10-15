@@ -1,7 +1,6 @@
 # Set l and t values here
 l = 1/2
 t = 1
-
 function naive_buffon(N)
     global needle_crosses = 0
     for i in 1:N
@@ -46,4 +45,27 @@ function master_buffon(N, max_n = 10^6)
     else
         return (2*l*N)/(t*C_global)
     end
+end
+
+function ϵ(p)
+    return 
+end
+
+using Plots
+function plot_err_buffon()
+    N = 10^3
+    ϵ = zeros(N)
+    p = zeros(N)
+    for i in 1:N
+        p[i] = master_buffon(i)
+        ϵ[i] = abs(pi - p[i])/pi 
+    end
+    p_abs = plot(1:N, p)
+    p_rel = plot(1:N, ϵ,
+        xscale = :log10,
+        yscale = :log10,
+        xlims = (0, N)
+    )
+    display(p)
+    
 end

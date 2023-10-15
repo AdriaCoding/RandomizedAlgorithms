@@ -5,5 +5,5 @@ include("../Assingment1/buffon.jl")
 #Pkg.add("DataStructures") # otherwise count() can bug
 using BenchmarkTools #used to test out performance
 
-N = 10^6
-
+N = 10^3
+plot_err_buffon()
