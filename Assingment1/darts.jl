@@ -15,9 +15,8 @@ function fast_darts(n, N = n)
     # Let the compiler do the typesetting.
     xs = rand(n)
     ys = rand(n)
-    # .{operator} signifies element-wise operations.
-    🎯 = count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
-    return 4.0 * 🎯 / N
+    # . before an operator signifies element-wise operations.
+    return 4.0/N *count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
 end
 # Used for calling fast_darts in parallel
 function master_dart(N, max_n = 10^6)
