@@ -1,6 +1,6 @@
 include("../Assingment1/darts.jl")
 include("../Assingment1/buffon.jl")
-using BenchmarkTools
+using BenchmarkTools #used to test out performance
 
 N = 10^6
 pi1 = @btime master_dart(N*800, 10^6)
