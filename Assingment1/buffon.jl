@@ -52,20 +52,32 @@ function ϵ(p)
 end
 
 using Plots
-function plot_err_buffon()
-    N = 10^3
-    ϵ = zeros(N)
-    p = zeros(N)
-    for i in 1:N
-        p[i] = master_buffon(i)
-        ϵ[i] = abs(pi - p[i])/pi 
-    end
-    p_abs = plot(1:N, p)
+using LaTeXStrings
+function plot_err_buffon(e)
+    N = 10^e
+    tic = 10.0 .^ collect(1:e)  
+    
+    p = master_buffon.(1:N)
+    p_abs = plot(1:N, p, 
+        xscale = :log10,
+        legend = false,
+        xlims = [0, N],
+        ylims = [0, 2*pi],
+        xticks =  tic
+    )
+
+    plot!(p_abs, [0, N], [pi, pi],
+        linecolor = :red,
+        linestyle = :dash
+    )
+
+    ϵ = abs,(p .-pi)/pi 
     p_rel = plot(1:N, ϵ,
         xscale = :log10,
         yscale = :log10,
+        legend = false,
         xlims = (0, N)
     )
-    display(p)
-    
+    display(p_abs)
 end
+plot_err_buffon(4)
