@@ -18,24 +18,13 @@ function fast_darts(n, N = n)
     # . before an operator signifies element-wise operations.
     return 4.0/N *count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
 end
-# Used for calling fast_darts in parallel
-function master_dart(N, max_n = 10^6)
-    if N ≤ max_n
-        return fast_darts(N)
-    end
-    🎯s = max_n*ones(Int, N ÷ max_n + 1)
-    🎯s[1] = N % max_n
-    mapa = n -> fast_darts(n, N)
-    return mapreduce(mapa, +, 🎯s)
-end
 
-function teste_dart(N, max_n = 10^6)
-    if N ≤ max_n
-        return fast_darts(N)
-    end
-    global π_approx = fast_darts(N % max_n, N)
+# fast and naive darts mix. 
+function master_darts(N, max_n = 10^6)
+    # if N ≤ max_n , master_dart ≡ fast_darts
+    global π_darts = fast_darts(N % max_n, N)
     for i in 1:(N ÷ max_n)
-        global π_approx += fast_darts(max_n, N)
+        global π_darts += fast_darts(max_n, N)
     end
-    return π_approx
+    return π_darts
 end
