@@ -1,8 +1,8 @@
 function plot_everything()
     plot_dart();
-    plot_err(7, master_darts);
+    plot_err(6, master_darts);
     plot_buffon();
-    plot_err(7, master_buffon);
+    plot_err(6, master_buffon);
 end
 function plot_err(e, pi_function)
     N = 10^e
@@ -115,6 +115,6 @@ function plot_dart(N = 1000)
     end
     plot!(p, title = string("N = ",N)*" darts thrown", xlims=(0,1), ylims=(0,1))
     display(p)
-    savefig(p, "Assignment1/Diana_N="*string(N)*".svg")
+    savefig(p, "Assignment1/plots/Diana_N="*string(N)*".svg")
 end
 

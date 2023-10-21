@@ -7,17 +7,13 @@ Pkg.add("LaTeXStrings"); #used for cooler plots
 using BenchmarkTools, Plots, LaTeXStrings; 
 
 # Include all the functions in the project
-include("../Assingment1/darts.jl")
-include("../Assingment1/buffon.jl")
-include("../Assingment1/plots.jl")
-export fast_darts
-export fast_buffon
-export plot_everything
+include("../Assignment1/darts.jl")
+include("../Assignment1/buffon.jl")
+include("../Assignment1/plots.jl")
+export naive_darts, fast_darts, master_darts
+export naive_buffon, fast_buffon, master_buffon
+export plot_everything, plot_buffon, plot_dart, plot_err;
 end;
 
 import .RandomPi as rp;
-using RandomPi;
-
-
-
-#@time plot_err(4, master_buffon)
+using .RandomPi, BenchmarkTools;

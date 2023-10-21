@@ -25,4 +25,20 @@ First assignment is about calculating π using the classic "throwing-darts" and 
 
 To try my code you just need to clone the repository and start a Julia REPL session from there. You can check your current working directory via the ```pwd()``` function and change it via ```cd("/path/to/RandomizedAlgorithms")```. 
 
-I created 
+I created a custom module named **RandomPi** containing all the functions for the assignment. Import it, along with all its dependencies, by typing
+```
+include("Assignment1\\main.jl")
+```
+Now you can execute any of the functions freely
+```
+fast_darts(10000)
+plot_everything()
+```
+And also measure their performance with the macros from BenchmarkTools!
+
+```
+N = 10^6
+@btime naive_buffon(N)
+@btime fast_buffon(N)
+@benchmark master_buffon(10^7, 10^6)
+```
