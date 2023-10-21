@@ -20,7 +20,7 @@ end
 function fast_buffon(N)
     xs = (t/2) * rand(N)
     θs = (π/2) * rand(N)
-    C = count(xs .≤ (l/2) * sin.(θs))
+    C = sum(xs .≤ (l/2) * sin.(θs))
     if C == 0
         return 0
     else
@@ -32,7 +32,7 @@ end
 function count_buffon(N)
     xs = (t/2) * rand(Float64, N)
     θs = (π/2) * rand(Float64, N)
-    return count(xs .≤ (l/2) * sin.(θs))
+    return sum(xs .≤ (l/2) * sin.(θs))
 end
 
 # a mix of fast and naive methods. 

@@ -15,8 +15,9 @@ function fast_darts(n, N = n)
     # Let the compiler do the typesetting.
     xs = rand(n)
     ys = rand(n)
-    # . before an operator signifies element-wise operations.
-    return 4.0/N * count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
+    # . before an operator signifies element-wise operations.  
+    return 4.0 / N * sum((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
+    
 end
 
 # fast and naive darts mix. 
