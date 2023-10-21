@@ -5,7 +5,7 @@ function naive_darts(N)
         # generate random doubles x, y ∈ [0, 1)
         x, y = rand(Float64, 2) 
         if (x-.5)^2 + (y-.5)^2 <= .25
-            global 🎯 += 1
+            🎯 += 1
         end
     end
     return 4.0*🎯/N
@@ -16,7 +16,7 @@ function fast_darts(n, N = n)
     xs = rand(n)
     ys = rand(n)
     # . before an operator signifies element-wise operations.
-    return 4.0/N *count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
+    return 4.0/N * count((xs .- .5).^2 .+ (ys .- .5).^2 .<= .25)
 end
 
 # fast and naive darts mix. 
