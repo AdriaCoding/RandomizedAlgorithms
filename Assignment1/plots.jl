@@ -41,8 +41,8 @@ function plot_err(e, pi_function)
     name = name * "e="*string(e);
     display(p_abs)
     display(p_rel)
-    savefig(p_abs, "Assingment1/plots/Absolute_"*name*".svg")
-    savefig(p_rel, "Assingment1/plots/Relative_"*name*".svg")
+    savefig(p_abs, "Assignment1/plots/Absolute_"*name*".svg")
+    savefig(p_rel, "Assignment1/plots/Relative_"*name*".svg")
 end
 
 
@@ -84,7 +84,7 @@ function plot_buffon(N=100)
         plot!(p, [Ax[i],Bx[i]],[Ay[i], By[i]], linecolor = cName)
     end
     display(p)
-    savefig(p, "Assingment1/plots/Buffon_N="*string(N)*".svg")
+    savefig(p, "Assignment1/plots/Buffon_N="*string(N)*".svg")
     return (2*(2*l2)*N)/(t*count)
 end
 
@@ -115,6 +115,6 @@ function plot_dart(N = 1000)
     end
     plot!(p, title = string("N = ",N)*" darts thrown", xlims=(0,1), ylims=(0,1))
     display(p)
-    savefig(p, "Assingment1/Diana_N="*string(N)*".svg")
+    savefig(p, "Assignment1/Diana_N="*string(N)*".svg")
 end
 
