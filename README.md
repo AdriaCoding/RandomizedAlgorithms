@@ -1,6 +1,6 @@
 # Adrià's Randomized Algorithms repository
 
-This is a repository of all my codes for the course in Randomized Algorithms at my master's degree, check out the course's open source [webpage](https://www.cs.upc.edu/~conrado/docencia/ra-miri.html)
+This is a repository of all my codes for the course in Randomized Algorithms at my master's degree, check out the course's open source [webpage](https://www.cs.upc.edu/~conrado/docencia/ra-miri.html).
 
 To install Julia, you can go the [official website](https://julialang.org/downloads/) and follow the appropriate steps for your system. 
 
@@ -23,4 +23,6 @@ Feel free to play arround with the REPL to be more familiarized with the languag
 ## Assignment 1 
 First assignment is about calculating π using the classic "throwing-darts" and "Buffon needles" Monte Carlo algorithms. See *assignment-1.pdf* for further details about the assignment.
 
-To run my code, my code via the Julia REPL (a built in interactive command line)
+To try my code you just need to clone the repository and start a Julia REPL session from there. You can check your current working directory via the ```pwd()``` function and change it via ```cd("/path/to/RandomizedAlgorithms")```. 
+
+I created 

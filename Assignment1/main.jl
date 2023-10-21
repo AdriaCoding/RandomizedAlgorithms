@@ -16,6 +16,7 @@ export plot_everything
 end;
 
 import .RandomPi as rp;
+using RandomPi;
 
 
 
