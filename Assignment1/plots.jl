@@ -72,20 +72,19 @@ function plot_buffon(N=100)
         yaxis=(ticks=false),
         xaxis=(draw_arrow=true),
         grid=false)
-    p = plot!(p, [t/2,t/2], [0,y_iv], linecolor = :black, linestyle=:dash)
+    p = plot!(p, [t/2,t/2], [0,y_iv],
+        linecolor = :black,
+        linestyle=:dash)
     xticks!(p, [0, .25, .5], [L"0",L"\frac{t}{2}", L"t"])
-    global count = 0
     for i in 1:N
         cName = "orangered"
         if (x[i] ≤ l2*sin(θ[i]))
             cName = "springgreen"
-            global count += 1
         end
         plot!(p, [Ax[i],Bx[i]],[Ay[i], By[i]], linecolor = cName)
     end
     display(p)
     savefig(p, "Assignment1/plots/Buffon_N="*string(N)*".svg")
-    return (2*(2*l2)*N)/(t*count)
 end
 
 function plot_dart(N = 1000)

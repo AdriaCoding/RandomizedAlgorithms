@@ -1,13 +1,13 @@
 # Set l and t values here
-l = 1/2
-t = 1
+const global l = 1/2
+const global t = 1
 function naive_buffon(N)
-    global needle_crosses = 0
-    for i in 1:N
+    needle_crosses = 0
+    for _ in 1:N
         x = (t/2) * rand()
         θ = (π/2) * rand()
         if x ≤ (l/2) * sin(θ)
-            global needle_crosses += 1
+            needle_crosses += 1
         end
     end
     if needle_crosses == 0
@@ -38,9 +38,9 @@ end
 # a mix of fast and naive methods. 
 function master_buffon(N, max_n = 10^6)
     # if N ≤ max_n , master_buffon ≡ fast_buffon
-    global C_global = count_buffon(N % max_n)
-    for i in 1:(N ÷ max_n)
-        global C_global += count_buffon(max_n)
+    C_global = count_buffon(N % max_n)
+    for _ in 1:(N ÷ max_n)
+        C_global += count_buffon(max_n)
     end
     if C_global == 0
         return 0
