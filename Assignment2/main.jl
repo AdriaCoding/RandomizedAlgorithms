@@ -19,7 +19,7 @@ import .SelectionAlgs as sa;
 v = rand(1:100, 10)
 inds = axes(v,1)
 println(v)
-sa.adaptative_partition!(v, 0.8, first(inds), last(inds), Base.Order.Forward)
+sa.adaptative_partition!(v, 0.2, first(inds), last(inds), Base.Order.Forward)
 println("\n===================\n")
 println(v)
 sa.default_quicksort!(v)

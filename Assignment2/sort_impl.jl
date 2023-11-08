@@ -3,7 +3,8 @@
 # default selectpivot method by julia
 @inline function selectpivot!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     @inbounds begin
-        mi = midpoint(lo, hi)
+        mi = 
+        (lo, hi)
 
         # sort v[mi] <= v[lo] <= v[hi] such that the pivot is immediately in place
         if lt(o, v[lo], v[mi])
@@ -31,7 +32,7 @@ function partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     @inbounds while true
         i += 1; j -= 1
         # Esto esta MAL. Si el pivot es el menor o mayor elemento, la j o la i, 
-        # respectivamente, saldrán del rango de v. Hay que usar un for para iterar.
+        # respectivamente, saldrán del rango de v.
         while lt(o, v[i], pivot); i += 1; end;
         while lt(o, pivot, v[j]); j -= 1; end;
         i >= j && break
