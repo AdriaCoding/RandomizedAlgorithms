@@ -107,9 +107,3 @@ function quickselect!(v::AbstractVector, k::Integer)
     quickselect!(v,first(inds),last(inds), k , Base.Order.Forward)
     return v[k]
 end
-v = rand(1:100, 20)
-println(v)
-println(quickselect!(v, 10))
-println(v)
-default_quicksort!(v)
-println(v)

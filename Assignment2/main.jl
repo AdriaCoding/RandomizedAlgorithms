@@ -6,13 +6,20 @@ Pkg.add("BenchmarkTools"); #used to test out performance
 Pkg.add("Plots");
 Pkg.add("LaTeXStrings"); #used for cooler plots
 =#
+
 using BenchmarkTools, Plots, LaTeXStrings, Base.Order; 
 
 # Include all the functions in the project
 include("sort_impl.jl")
-export 
-default_quicksort!
-end;
+include("sesquickselect.jl")
+export default_quicksort!, adaptative_partition!
+end
 
 import .SelectionAlgs as sa;
-using .SelectionAlgs, BenchmarkTools;
+v = rand(1:100, 10)
+inds = axes(v,1)
+println(v)
+sa.adaptative_partition!(v, 0.3, first(inds), last(inds), Base.Order.Forward)
+println(v)
+sa.default_quicksort!(v)
+println(v)
