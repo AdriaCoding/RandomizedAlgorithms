@@ -2,13 +2,16 @@ const nu = 0.25;
 ## cop of base. make it YBB
 function adaptative_partition!(v::AbstractVector, α, lo::Integer, hi::Integer, o::Ordering)
     # Pivots are the last and first elements of v. Assume this is random
+    #=
     if (lt(o, v[lo], v[hi]))
         P, Q = v[lo], v[hi]
     else
         P, Q = v[hi], v[lo]
     end
+    =#
+    P, Q = v[lo], v[hi]
     i, j = lo, hi
-
+    iter = 0
     if (nu ≤ α && α ≤ 1 -nu) # dual pivot partition
         k = i
         @inbounds while true
@@ -28,16 +31,24 @@ function adaptative_partition!(v::AbstractVector, α, lo::Integer, hi::Integer, 
             i >= j && break
         end
     else # single pivot partition
-        if (α < nu); pivot = P;
-        elseif (α > 1-nu); pivot = Q; end;
+        if (α < nu); pivot = P; pr = lo; i+=1;
+        elseif (α > 1-nu); pivot = Q; pr = hi;  j-=1; end;
+        println("Pivot is ", pivot, ": i=", i ," j=", j)
+
         @inbounds while true
-            i += 1; j -= 1
+            println("ITERATION ", iter, ": i=", i ," j=", j)
             while lt(o, v[i], pivot); i += 1; end;
             while lt(o, pivot, v[j]); j -= 1; end;
             i >= j && break
+
+            println(v)
             v[i], v[j] = v[j], v[i]
+            i += 1; j -= 1
+            println(v)
+            println("ITERATION ", iter+= 1, ": i=", i ," j=", j)
+
         end
-        v[j], v[lo] = pivot, v[j]
+        v[j], v[pr] = pivot, v[j]
     end
     # v[j] == pivot
     # v[k] >= pivot for k > j
