@@ -56,8 +56,8 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
     n = hi - lo + 1
     if (n < 2)
         if hi == lo
-            if v[m] == v[lo]; return v[m]; end
-            error("sesquickselect FAILED as $(v[lo]) is not at rank $m")
+            if m == lo; return v[m]; end
+            error("sesquickselect FAILED as rank $m is outside bounds ($lo, $hi)")
         else
             error("sesquickselect FAILED as it was called with hi ≤ lo: $hi ≤ $lo")
         end

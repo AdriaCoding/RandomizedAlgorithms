@@ -51,14 +51,18 @@ function sesquickselect!(v::AbstractVector, m, 𝓢)
     if(m < first(inds) || m > last(inds))
         return error("Desired rank is outside of vector range.")
     end
-    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward, 𝓢)
+    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward, 𝓢+2)
 end
 function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering, 𝓢)
+    # Assume lo and hi indices are already scanned.
     n = hi - lo + 1
-    if (n <= 3)
-        sort!(v, lo, hi, InsertionSort, o)
-        println("jola")
-        return 𝓢+1
+    if (n < 2)
+        if hi == lo
+            if m == lo; return v[m]; end
+            error("sesquickselect FAILED as rank $m is outside bounds ($lo, $hi)")
+        else
+            error("sesquickselect FAILED as it was called with hi ≤ lo: $hi ≤ $lo")
+        end
     end
     α = m / n
     if (nu <= α && α <= nu - 1)
@@ -68,17 +72,17 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
         else
             v[lo], v[j], v[i], v[hi] = v[j], v[lo], v[hi], v[i]
         end
-        i, j = double_partition!(v, lo, hi, o, 𝓢)
+        i, j = double_partition!(v, lo, hi, o, 𝓢+2)
     else
         randrank = rand(lo:hi)
         v[lo], v[randrank] = v[randrank], v[lo]
-        i, j = single_partition!(v, lo, hi, o, 𝓢)
+        i, j = single_partition!(v, lo, hi, o, 𝓢+1)
 
     end
     if m == i; return  𝓢
     elseif m == j; return  𝓢
-    elseif m < i; return sesquickselect!(v, m, lo, i-1, o, 𝓢)
-    elseif j < m; return sesquickselect!(v, m, j+1, hi, o, 𝓢)
-    else return sesquickselect!(v, m, i+1, j-1, o, 𝓢)
+    elseif m < i; return sesquickselect!(v, m, lo, i-1, o, 𝓢+1)
+    elseif j < m; return sesquickselect!(v, m, j+1, hi, o, 𝓢+1)
+    else return sesquickselect!(v, m, i+1, j-1, o, 𝓢+2)
     end
 end
