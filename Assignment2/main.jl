@@ -1,36 +1,57 @@
 module SelectionAlgs
 # Only once, load all the potentilly necessary libraries
-#=
-import Pkg;
+
+#= import Pkg;
 Pkg.add("BenchmarkTools"); #used to test out performance
 Pkg.add("Plots");
 Pkg.add("LaTeXStrings"); #used for cooler plots
-=#
-
-using BenchmarkTools, Plots, LaTeXStrings, Base.Order; 
+Pkg.add("Random"); #used for shuffle method
+ =#
+using BenchmarkTools, Plots, LaTeXStrings, Base.Order, Random;
 
 # Include all the functions in the project
 include("sort_impl.jl")
 include("sesquickselect.jl")
 include("se_sesquickselect.jl")
 
-export default_quicksort!, adaptative_partition!
+export default_quicksort!, adaptative_partition!, 
+get_scanned_elements, gSE;
 end
 
 import .SelectionAlgs as sa;
 
-n = 10; w = rand(1:10, n); m=rand(1:n);
-𝓢 = sa.sesquickselect!(w, m, 0)
-println("number of scanned elements: $𝓢")
+#= function get_scanned_elements(n, T)
+    sorted = 1:n
+    S = []
+    for i in range(0, step=max(1, trunc(Int, n/300)), stop=n)
+        S_i = 0.0
+        for r in 1:T
+            perm = shuffle(sorted)
+            if(i == 0); i +=1; end
+            v = perm
+            S_ir = sa.sesquickselect!(v, i, 0) 
+            S_i += S_ir / T
+        end
+        S_i = round(S_i/n, digits=2)
+        append!(S, S_i)
+    end
+    return S
+end =#
+gSE() = get_scanned_elements(30000, 1000)
+println(gSE())
 #DEBUG ONLY
-
-#=  error = 0;
-for iter in 1:500000
-    n = 10; w = rand(1:10, n); m=rand(1:n);
-    ñ = sa.sesquickselect!(w, m)
-    sort!(w)
-    if w[m] != ñ; global error += 1
-        println(iter, "\n====================\n");
+#= 
+error = 0; n=3; T = 500
+sorted = 1:n
+for r in 1:T
+    perm = shuffle(sorted)
+    for i in range(0, step=max(1, trunc(Int, n/300)), stop=n)
+        if(i == 0); i +=1; end
+        v = perm
+        element = sa.sesquickselect!(v, i)
+        if sorted[i] != element; global error += 1
+            println("$r: ", v, "\n====================\n");
+        end
     end
 end
-println("\n================================================================ \nErrors commited: ", error)  =#
+if (error > 0) println("\n ================================================================ \nErrors commited: ", error); end =#

@@ -3,8 +3,8 @@ nu = 0.33;
 function single_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     i, j, pivot = lo+1, hi, v[lo]
     @inbounds while true
-        @inbounds while lt(o, v[i], pivot) && i < hi; i+=1; end
-        @inbounds while lt(o, pivot, v[j]) && j > lo ; j-=1; end
+        @inbounds while  lt(o, v[i], pivot) && i < hi; i+=1; end
+        @inbounds while !lt(o, v[j], pivot) && j > lo ; j-=1; end
         i >= j && break
         v[i], v[j] = v[j], v[i]
 
@@ -32,7 +32,8 @@ function double_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Order
         end
         k+=1
     end
-    i -= 1; j+=1;
+    i -= 1;
+    while j < hi && v[j+=1] == Q; end
     v[lo], v[i], v[j], v[hi] = v[i], P, Q, v[j]          
     return i, j
 end
