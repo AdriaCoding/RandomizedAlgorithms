@@ -1,6 +1,7 @@
 using Base.Order
-nu = 0.33;
-function single_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
+nu = 0.33
+## COUNT º SCANNED ELEMENTS IN VARIABLE 𝓢
+function single_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering, 𝓢)
     i, j, pivot = lo+1, hi, v[lo]
     @inbounds while true
         @inbounds while  lt(o, v[i], pivot) && i < hi; i+=1; end
@@ -13,7 +14,7 @@ function single_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Order
     return j, j
 end
 
-function double_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
+function double_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering, 𝓢)
     i, j = lo, hi
     # assume pivots are in order ( P <= Q )
     P, Q = v[lo], v[hi]
@@ -45,18 +46,19 @@ function two_distinct_rng(n::Integer, lo::Integer)
     return lo + a, lo + b
 end
 
-function sesquickselect!(v::AbstractVector, m)
+function sesquickselect!(v::AbstractVector, m, 𝓢)
     inds = axes(v,1)
     if(m < first(inds) || m > last(inds))
         return error("Desired rank is outside of vector range.")
     end
-    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward)
+    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward, 𝓢)
 end
-function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering)
+function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering, 𝓢)
     n = hi - lo + 1
     if (n <= 3)
         sort!(v, lo, hi, InsertionSort, o)
-        return v[m]
+        println("jola")
+        return 𝓢+1
     end
     α = m / n
     if (nu <= α && α <= nu - 1)
@@ -66,17 +68,17 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
         else
             v[lo], v[j], v[i], v[hi] = v[j], v[lo], v[hi], v[i]
         end
-        i, j = double_partition!(v, lo, hi, o)
+        i, j = double_partition!(v, lo, hi, o, 𝓢)
     else
         randrank = rand(lo:hi)
         v[lo], v[randrank] = v[randrank], v[lo]
-        i, j = single_partition!(v, lo, hi, o)
+        i, j = single_partition!(v, lo, hi, o, 𝓢)
 
     end
-    if m == i; return v[i]
-    elseif m == j; return v[j]
-    elseif m < i; return sesquickselect!(v, m, lo, i-1, o)
-    elseif j < m; return sesquickselect!(v, m, j+1, hi, o)
-    else return sesquickselect!(v, m, i+1, j-1, o)
+    if m == i; return  𝓢
+    elseif m == j; return  𝓢
+    elseif m < i; return sesquickselect!(v, m, lo, i-1, o, 𝓢)
+    elseif j < m; return sesquickselect!(v, m, j+1, hi, o, 𝓢)
+    else return sesquickselect!(v, m, i+1, j-1, o, 𝓢)
     end
 end

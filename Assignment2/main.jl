@@ -12,11 +12,16 @@ using BenchmarkTools, Plots, LaTeXStrings, Base.Order;
 # Include all the functions in the project
 include("sort_impl.jl")
 include("sesquickselect.jl")
+include("se_sesquickselect.jl")
+
 export default_quicksort!, adaptative_partition!
 end
 
 import .SelectionAlgs as sa;
 
+n = 10; w = rand(1:10, n); m=rand(1:n);
+𝓢 = sa.sesquickselect!(w, m, 0)
+println("number of scanned elements: $𝓢")
 #DEBUG ONLY
 
 #= error = 0;
