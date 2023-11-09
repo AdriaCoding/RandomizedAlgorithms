@@ -90,18 +90,20 @@ end
 
 function get_scanned_elements(n::Integer, T::Integer)
     sorted = 1:n
-    S = []
+    S = []; I=[]; itrtr = 0
     for i in range(0, step=max(1, trunc(Int, n/300)), stop=n)
         S_i = 0.0
+        if(i == 0); i +=1; end
         for r in 1:T
             perm = shuffle(sorted)
-            if(i == 0); i +=1; end
             v = perm
             S_ir = sa.sesquickselect!(v, i, 0) 
             S_i += S_ir / T
         end
         S_i = round(S_i/n, digits=2)
+
+        append!(I, i)
         append!(S, S_i)
     end
-    return S
+    return S, I
 end
