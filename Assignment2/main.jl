@@ -24,8 +24,8 @@ n = 10; w = rand(1:10, n); m=rand(1:n);
 println("number of scanned elements: $𝓢")
 #DEBUG ONLY
 
-#= error = 0;
-for iter in 1:50000000
+ error = 0;
+for iter in 1:500000
     n = 10; w = rand(1:10, n); m=rand(1:n);
     ñ = sa.sesquickselect!(w, m)
     sort!(w)
@@ -33,4 +33,4 @@ for iter in 1:50000000
         println(iter, "\n====================\n");
     end
 end
-println("\n================================================================ \nErrors commited: ", error) =#
+println("\n================================================================ \nErrors commited: ", error) 

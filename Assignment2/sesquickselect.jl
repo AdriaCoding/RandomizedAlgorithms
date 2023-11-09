@@ -54,9 +54,13 @@ function sesquickselect!(v::AbstractVector, m)
 end
 function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering)
     n = hi - lo + 1
-    if (n <= 3)
-        sort!(v, lo, hi, InsertionSort, o)
-        return v[m]
+    if (n < 2)
+        if hi == lo
+            if v[m] == v[lo]; return v[m]; end
+            error("sesquickselect FAILED as $(v[lo]) is not at rank $m")
+        else
+            error("sesquickselect FAILED as it was called with hi ≤ lo: $hi ≤ $lo")
+        end
     end
     α = m / n
     if (nu <= α && α <= nu - 1)
