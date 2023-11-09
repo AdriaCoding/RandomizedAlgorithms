@@ -18,18 +18,14 @@ end
 import .SelectionAlgs as sa;
 
 #DEBUG ONLY
-error = 0;
-for _ in 1:100
-    n = 10; v = rand(1:100, n); m=rand(1:n);
-    inds = axes(v,1); 
-    s = "Find element $m of : \n $v"
-    ñ = sa.sesquickselect!(v, m)
 
-    s = s* "\n ñ = $ñ\n$v\n"
-    sort!(v)
-    s = s*"$v"
-    if v[m] != ñ; global error += 1
-        println(s, "\n====================\n")
+#= error = 0;
+for iter in 1:50000000
+    n = 10; w = rand(1:10, n); m=rand(1:n);
+    ñ = sa.sesquickselect!(w, m)
+    sort!(w)
+    if w[m] != ñ; global error += 1
+        println(iter, "\n====================\n");
     end
 end
-println("\n================================================================ \nErrors commited: ", error)
+println("\n================================================================ \nErrors commited: ", error) =#
