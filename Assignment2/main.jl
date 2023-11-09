@@ -16,11 +16,20 @@ export default_quicksort!, adaptative_partition!
 end
 
 import .SelectionAlgs as sa;
-v = rand(1:100, 10)
-inds = axes(v,1)
-println(v)
-sa.adaptative_partition!(v, 0.2, first(inds), last(inds), Base.Order.Forward)
-println("\n===================\n")
-println(v)
-sa.default_quicksort!(v)
-println(v)
+
+#= #DEBUG ONLY
+error = 0;
+for _ in 1:100
+    n = 10; v = rand(1:100, n); m=rand(1:n);
+    inds = axes(v,1); println("Find element ", m, " of : \n",v, "\n===================")
+    ñ = sa.sesquickselect!(v, m)
+
+    println("\n===================\n", v, " ñ = ", ñ)
+    sort!(v)
+    println(v)
+    if v[m] != ñ; global error += 1
+        println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+    end
+end
+println("\n================================================================ \nErrors commited: ", error)
+=#

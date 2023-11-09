@@ -31,8 +31,6 @@ function partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     i, j = lo, hi
     @inbounds while true
         i += 1; j -= 1
-        # Esto esta MAL. Si el pivot es el menor o mayor elemento, la j o la i, 
-        # respectivamente, saldrán del rango de v.
         while lt(o, v[i], pivot); i += 1; end;
         while lt(o, pivot, v[j]); j -= 1; end;
         i >= j && break
@@ -45,7 +43,6 @@ function partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     # v[i] <= pivot for i < j
     return j
 end
-
 const SMALL_ALGORITHM  = InsertionSort
 const SMALL_THRESHOLD  = 20
 # This is equivalent to the default Julia sort! algorithm for integers with ascending order. 
