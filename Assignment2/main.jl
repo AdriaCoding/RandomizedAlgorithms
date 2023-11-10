@@ -38,9 +38,10 @@ I, Sx = sa.get_scanned_elements(n, T);
 println(sum(Sx)/n)
 sa.empirical_plot(I, Sx, n)
  =#
+
 #DEBUG ONLY
 
-error = 0; n=10; T = 50
+error = 0; n=1000; T = 500
 sorted = 1:n
 for r in 1:T
     perm = sa.shuffle(sorted)
@@ -51,7 +52,7 @@ for r in 1:T
         println("ERROR $r: rank = $i\n",sorted, "\n",perm,"\n", v,element, "\n====================\n");
     end
 end
-if (error > 0) println("\n ================================================================ \nErrors commited: ", error); end
+println("\n ================================================================ \nErrors commited: ", error)
 
 
 #= 27: rank = 2

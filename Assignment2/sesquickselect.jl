@@ -54,42 +54,33 @@ end
 function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering)
     n = hi - lo + 1
     if (n < 1) return error("sesquickselect FAILED as it was called with hi ≤ lo: $hi ≤ $lo"); end;
-    if (n <= 2) # n=1,2
-        if (lt(o, v[hi], v[lo])) v[lo], v[hi] = v[hi], v[lo]; end
-
-        if (m == lo || m == hi) return v[m];
+    if (n == 1) 
+        if (m == lo) return v[m];
         else return error("sesquickselect FAILED as m=$m is out of bounds (lo=$lo, hi=$hi)")
         end
     end
     α = m / n
-    if (true #= & (nu <= α) && α <= 1 - nu =#)
+    if ( nu <= α && α <= 1 - nu )
         i, j = two_distinct_rng(n, lo)
-        println("ranks = $lo, $hi; pivots = ($i->$(v[i]), $j->$(v[j]))")
-        println(v, "Before pivot positioning")
+        # ensure that i is the smallest
+        if lt(o, v[j], v[i]) i, j = j, i end
+        v[lo], v[i] = v[i], v[lo] 
+        # prevent dumbest source of error
+        if (j == lo) j = i end
+        v[j], v[hi] = v[hi], v[j]
 
-        ti, tlo, thi, tj = deepcopy(v[i]), deepcopy(v[lo]), deepcopy(v[hi]), deepcopy(v[j])
-        if lt(o, v[i], v[j]) 
-            println("v[$i] < v[$j]")
-            v[lo], v[i], v[j], v[hi] = ti, tlo, thi, tj
-        else
-            println("v[$j] < v[$j]")
-            v[lo], v[j], v[i], v[hi] = tj, tlo, thi, ti
-        end
-        println(v, "After pivot positioning")
         i, j = double_partition!(v, lo, hi, o)
-        println(v, "($i, $j)")
     else
         randrank = rand(lo:hi)
         v[lo], v[randrank] = v[randrank], v[lo]
+        
         i, j = single_partition!(v, lo, hi, o)
-
     end
-    println("     ¿What should I call?        m=$m, i=$i, j=$j")
-    if m == i; return v[i]
-    elseif m == j; return v[j]
-    elseif m < i; println("CALL 1: $lo, $(i-1)"); return sesquickselect!(v, m, lo, i-1, o)
-    elseif j < m; println("CALL 2: $(j-1), $(hi)"); return sesquickselect!(v, m, j+1, hi, o)
-    else println("CALL 3: $(i+1), $(j-1)"); return sesquickselect!(v, m, i+1, j-1, o)
+    if m == i return v[i]
+    elseif m == j return v[j]
+    elseif m < i return sesquickselect!(v, m, lo, i-1, o)
+    elseif j < m return sesquickselect!(v, m, j+1, hi, o)
+    else return sesquickselect!(v, m, i+1, j-1, o)
     end
 end
 #####################################################
@@ -139,7 +130,6 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
 end
 
 function get_scanned_elements(n::Integer, T::Integer)
-    println("get_scanned_elements function is getting called.")
     sorted = 1:n
     S = []; I=[]; itrtr = 0
     for i in range(0, step=max(1, trunc(Int, n/300)), stop=n)
