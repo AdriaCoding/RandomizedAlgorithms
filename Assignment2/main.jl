@@ -17,7 +17,7 @@ include("plots.jl")
 include("theoretical.jl")
 
 export default_quicksort!, adaptative_partition!, 
-get_scanned_elements, gSE, empirical_plot;
+get_scanned_elements, gSE, empirical_plot, f;
 end
 
 import .SelectionAlgs as sa;
