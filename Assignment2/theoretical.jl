@@ -38,7 +38,7 @@ function f(x::AbstractFloat, ν::AbstractFloat)
     else; error("Invalid funcion arguments ($x, $ν)")
     end
 end
-f(x) = f(x, 0.265) # optimal value
+f(x) = f(x, 0.265) # optimal valuea
 
 #= p1 = plot(range(0,1,length=100), [𝒞_1, 𝒞_3, 𝒞_4, 𝒞_5], layout=(4, 1), legend=false)
 p2 = plot(range(0,1,length=100), Δ)
