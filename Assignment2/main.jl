@@ -40,17 +40,33 @@ sa.empirical_plot(I, Sx, n)
  =#
 #DEBUG ONLY
 
-error = 0; n=300; T = 3
+error = 0; n=10; T = 50
 sorted = 1:n
 for r in 1:T
     perm = sa.shuffle(sorted)
-    for i in range(0, step=max(1, trunc(Int, n/300)), stop=n)
-        if(i == 0); i +=1; end
-        v = perm
-        element = sa.sesquickselect!(v, i)
-        if sorted[i] != element; global error += 1
-            println("$r: rank = $i", v, "\n====================\n");
-        end
+    v = copy(perm); i = rand(1:n)
+    println("====================\nCalling sesquick with m=$i")
+    element = sa.sesquickselect!(v, i)
+    if sorted[i] != element; global error += 1
+        println("ERROR $r: rank = $i\n",sorted, "\n",perm,"\n", v,element, "\n====================\n");
     end
 end
 if (error > 0) println("\n ================================================================ \nErrors commited: ", error); end
+
+
+#= 27: rank = 2
+1:10
+[5, 4, 2, 10, 3, 1, 7, 6, 8, 9]
+[2, 3, 3, 4, 5, 8, 7, 6, 9, 10]3
+====================
+
+35: rank = 2
+1:10
+[7, 8, 6, 10, 1, 4, 3, 5, 2, 9]
+[1, 3, 4, 4, 5, 7, 8, 6, 9, 10]3
+====================
+
+47: rank = 3
+1:10
+[8, 9, 3, 6, 1, 5, 4, 2, 7, 10]
+[1, 1, 2, 3, 4, 7, 8, 9, 8, 10]2 =#
