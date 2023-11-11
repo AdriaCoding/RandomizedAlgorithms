@@ -44,14 +44,16 @@ function two_distinct_rng(n::Integer, lo::Integer)
     return lo + a, lo + b
 end
 
-function sesquickselect!(v::AbstractVector, m)
+#Use optimal value of nu by default
+sesquickselect!(v::AbstractVector, m::Integer) =sesquickselect!(v::AbstractVector, m, 0.2843)
+function sesquickselect!(v::AbstractVector, m::Integer, nu)
     inds = axes(v,1)
     if(m < first(inds) || m > last(inds))
         return error("Desired rank is outside of vector range.")
     end
-    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward)
+    sesquickselect!(v, m, first(inds), last(inds), nu, Base.Order.Forward)
 end
-function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering)
+function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, nu, o::Ordering)
     n = hi - lo + 1
     if (n < 1) return error("sesquickselect FAILED as it was called with hi < lo: $hi < $lo"); end;
     if (n == 1) 
@@ -79,23 +81,23 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
     # Recursive Step
     if m == i return v[i]
     elseif m == j return v[j]
-    elseif m < i return sesquickselect!(v, m, lo, i-1, o)
-    elseif j < m return sesquickselect!(v, m, j+1, hi, o)
-    else return sesquickselect!(v, m, i+1, j-1, o)
+    elseif m < i return sesquickselect!(v, m, lo, i-1, nu, o)
+    elseif j < m return sesquickselect!(v, m, j+1, hi, nu, o)
+    else return sesquickselect!(v, m, i+1, j-1, nu, o)
     end
 end
 #####################################################
 
 # used to count number of scanned elements
-function sesquickselect!(v::AbstractVector, m, S, νnu)
+function sesquickselect!(v::AbstractVector, m::Integer, nu, S::Integer)
     inds = axes(v,1)
     if(m < first(inds) || m > last(inds))
         return error("Desired rank is outside of vector range.")
     end
-    sesquickselect!(v, m, first(inds), last(inds), Base.Order.Forward, S, νnu)
+    sesquickselect!(v, m, first(inds), last(inds), nu, Base.Order.Forward, S)
 end
 
-function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, o::Ordering, S::Integer, νnu)
+function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer, nu, o::Ordering, S::Integer)
     n = hi - lo + 1
 
     if (n < 1) return error("sesquickselect FAILED as it was called with hi < lo: $hi < $lo"); end;
@@ -114,11 +116,11 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
 
     # Partition the array depending on α
     α = (m-lo) / n  # use relative ranks
-    if ( νnu <= α && α <= 1 - νnu )
+    if ( nu <= α && α <= 1 - nu )
         i, j = double_partition!(v, lo, hi, o)
         S += (n - 2 + i - lo)
     else
-        if (α > 1-νnu) v[lo], v[hi] = v[hi], v[lo] end
+        if (α > 1-nu) v[lo], v[hi] = v[hi], v[lo] end
         i, j = single_partition!(v, lo, hi, o)
         S += (n - 1)
     end
@@ -126,9 +128,9 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
     # Recursive step
     if m == i; return  S, v[m]
     elseif m == j; return  S, v[m]
-    elseif m < i; return sesquickselect!(v, m, lo, i-1, o, S, νnu)
-    elseif j < m; return sesquickselect!(v, m, j+1, hi, o, S, νnu)
-    else return sesquickselect!(v, m, i+1, j-1, o, S, νnu)
+    elseif m < i; return sesquickselect!(v, m, lo, i-1, nu, o, S)
+    elseif j < m; return sesquickselect!(v, m, j+1, hi, nu, o, S)
+    else return sesquickselect!(v, m, i+1, j-1, nu, o, S)
     end
 end
 
@@ -140,7 +142,7 @@ function get_scanned_elements(n::Integer, T::Integer, ν)
         if(i == 0) i +=1 end
         for r in 1:T
             vect = copy(perms[r])  
-            S_ir[r], element = sesquickselect!(vect, i, 0, ν) 
+            S_ir[r], element = sesquickselect!(vect, i, ν, 0) 
             if element != i
                 println("Error at permutation $(perms[r]) with m = $i. Returned element count $(S_ir[r])")
             end
