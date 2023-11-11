@@ -28,7 +28,7 @@ C_4(ν) = ν != 0 ? 𝒞_4(ν) / Δ(ν) : error("Cannot evaluate ν == 0")
 C_5(ν) = ν != 0 ? 𝒞_5(ν) / Δ(ν) : error("Cannot evaluate ν == 0")
 #TODO
 C_6(ν) = 3/2 
-h(x) = -x*ln(x) - (1-x)*ln(1-x)
+h(x) = (x==0.0 || x==1.0) ? 0.0 : -x*ln(x) - (1-x)*ln(1-x) 
 f1(x, ν) = C_1(ν)*(1/6 * x^3 + 1/2 * x^2 - x - (1-x)*ln(1-x)) + C_2(ν)*h(x) + C_3(ν)*x + C_6(ν)
 f2(x, ν)  = C_4(ν) + C_5(ν) * h(x)
 function f(x::AbstractFloat, ν::AbstractFloat)
@@ -38,7 +38,7 @@ function f(x::AbstractFloat, ν::AbstractFloat)
     else; error("Invalid funcion arguments ($x, $ν)")
     end
 end
-f(x) = f(x, 0.265) # optimal valuea
+f(x) = f(x, 0.265) # optimal value
 
 #= p1 = plot(range(0,1,length=100), [𝒞_1, 𝒞_3, 𝒞_4, 𝒞_5], layout=(4, 1), legend=false)
 p2 = plot(range(0,1,length=100), Δ)
