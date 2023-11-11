@@ -1,5 +1,6 @@
 using Base.Order
-nu = 0.33;
+
+# Auxiliary functions for sesquickselect
 function single_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
     i, j, pivot = lo+1, hi, v[lo]
     @inbounds while true
@@ -38,14 +39,25 @@ function double_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Order
 end
 
 function two_distinct_rng(n::Integer, lo::Integer)
+    # Some cool implementation by performance hacker `GunnarFarneback`
+    # https://discourse.julialang.org/t/draw-two-distinct-random-integers-from-1-n/72289/19
     ind = rand(0:(n * (n - 1) - 1))
     a, b = divrem(ind, n)
     a += (a >= b)
     return lo + a, lo + b
 end
 
-#Use optimal value of nu by default
-sesquickselect!(v::AbstractVector, m::Integer) =sesquickselect!(v::AbstractVector, m, 0.2843)
+function select_two_pivots!(v::AbstractVector, lo::Integer, hi::Integer, o::Ordering)
+    i, j = two_distinct_rng(hi - lo + 1, lo)
+    if lt(o, v[j], v[i]) i, j = j, i end    # ensure that i points to the smallest pivot
+    v[lo], v[i] = v[i], v[lo]   # place pivot v[i] at the beggining
+    if (j == lo) j = i end  # prevent dumbest source of error
+    v[j], v[hi] = v[hi], v[j]   # place pivot v[j] at the end
+end
+#####################################
+# Sesquickselect methods
+# Use optimal value of nu by default
+sesquickselect!(v::AbstractVector, m::Integer) = sesquickselect!(v::AbstractVector, m, 0.2843)
 function sesquickselect!(v::AbstractVector, m::Integer, nu)
     inds = axes(v,1)
     if(m < first(inds) || m > last(inds))
@@ -61,12 +73,9 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
         else return error("sesquickselect FAILED as m=$m is out of bounds (lo=$lo, hi=$hi)")
         end
     end
-    # Select two pivots
-    i, j = two_distinct_rng(n, lo)
-    if lt(o, v[j], v[i]) i, j = j, i end    # ensure that i points to the smallest pivot
-    v[lo], v[i] = v[i], v[lo]   # place pivot v[i] at the beggining
-    if (j == lo) j = i end  # prevent dumbest source of error
-    v[j], v[hi] = v[hi], v[j]   # place pivot v[j] at the end
+
+    # Select two pivots and place them in the bounds -> lo, hi
+    select_two_pivots!(v, lo, hi, o) # P = v[lo] < v[hi] = Q
 
     # Partition the array depending on α
     α = (m-lo) / n  # use relative ranks
@@ -77,7 +86,6 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
         i, j = single_partition!(v, lo, hi, o)
     end
     
-
     # Recursive Step
     if m == i return v[i]
     elseif m == j return v[j]
@@ -107,12 +115,8 @@ function sesquickselect!(v::AbstractVector, m::Integer, lo::Integer, hi::Integer
         end
     end
 
-    # Select two pivots
-    i, j = two_distinct_rng(n, lo)
-    if lt(o, v[j], v[i]) i, j = j, i end    # ensure that i points to the smallest pivot
-    v[lo], v[i] = v[i], v[lo]   # Place pivot v[i] at the beggining
-    if (j == lo) j = i end  # prevent dumbest source of error
-    v[j], v[hi] = v[hi], v[j]   #Place pivot v[j] at the end
+    # Select two pivots and place them in the bounds -> lo, hi
+    select_two_pivots!(v, lo, hi, o) # P = v[lo] < v[hi] = Q
 
     # Partition the array depending on α
     α = (m-lo) / n  # use relative ranks
