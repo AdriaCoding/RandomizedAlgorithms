@@ -6,21 +6,17 @@ sesquickselect!, single_partition!, double_partition!,
 two_distinct_rng, select_two_pivots!, get_scanned_elements
 
 # Only once, load all the potentially necessary libraries
-
-#= import Pkg;
-Pkg.add("BenchmarkTools"); #used to test out performance
+import Pkg;
 Pkg.add("Plots");
-Pkg.add("LaTeXStrings"); #used for cooler plots
 Pkg.add("Random"); #used for shuffle method
- =#
-using BenchmarkTools, Plots, LaTeXStrings, Base.Order , Random;
+
+using Plots, Base.Order , Random;
 
 # Include all the functions in the project
 include("sort_impl.jl")
 include("sesquickselect.jl")
 include("plots.jl")
 include("theoretical.jl")
-
 end
 
 import .SelectionAlgorithms as sa
@@ -40,8 +36,8 @@ sa.empirical_plot(I, Sx, n, nu )
 =#
 
 ######## Obtain very rough approximation of optimal nu , which is 0.265 ########
-#= n = 30000; T = 100; l = 100
-nus = range(0.2, 0.3, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
+#= n = 30000; T = 100; l = 100; nulo =0.2; nuhi = 0.3
+nus = range(nulo, nuhi, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
 for i in 1:l
     _, Scanned, _ = sa.get_scanned_elements(n, T, nus[i])
     Smeans[i] = sum(Scanned)/n
@@ -50,7 +46,7 @@ for i in 1:l
         global minid = i; 
     end
 end
-p = sa.plot(nus, Smeans, label=""); display(p)
+p = sa.plot(nus, Smeans, label="", xticks=range(nulo, nuhi, l/10)); display(p)
 println("Minimal proportion of scanned elements $min found with ν = $(nus[minid])")
  =#
 ######## Check sesquickselct! correctness ad devault nu = 0.2843 ########
