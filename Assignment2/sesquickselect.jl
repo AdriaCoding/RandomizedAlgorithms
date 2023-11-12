@@ -39,7 +39,7 @@ function double_partition!(v::AbstractVector, lo::Integer, hi::Integer, o::Order
 end
 
 function two_distinct_rng(n::Integer, lo::Integer)
-    # Some cool implementation by performance hacker `GunnarFarneback`
+    # Some cool and fast implementation by performance hacker `GunnarFarneback`
     # https://discourse.julialang.org/t/draw-two-distinct-random-integers-from-1-n/72289/19
     ind = rand(0:(n * (n - 1) - 1))
     a, b = divrem(ind, n)
