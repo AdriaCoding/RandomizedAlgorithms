@@ -25,12 +25,11 @@ import .SelectionAlgorithms as sa
 using .SelectionAlgorithms
 
 
-
 ######## To compute the plots like in the report ########
-sa.compute_and_plot(30000, 100,   [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]) #Takes several seconds
+#= sa.compute_and_plot(30000, 100,   [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]) #Takes several seconds
 sa.compute_and_plot(30000, 1000,  [0.1, 0.2, 0.265, 0.3, 0.4, 0.5])
 sa.compute_and_plot(30000, 10000, [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]) #Takes +1h
- 
+ =#
 ######## To compute a single plot for a value of nu ########
 #= nu = 0.2; n = 3000; T = 100
 I, Sx, V = sa.get_scanned_elements(n, T, nu); 
@@ -39,8 +38,8 @@ sa.empirical_plot(I, Sx, n, nu )
 =#
 
 ######## Obtain very rough approximation of optimal nu , which is 0.265 ########
-#= n = 3000; T = 1000; l = 100
-nus = range(0.2, 0.3, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
+n = 300; T = 1000; l = 100
+nus = range(0.25, 0.27, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
 for i in 1:l
     _, Scanned, _ = sa.get_scanned_elements(n, T, nus[i])
     Smeans[i] = sum(Scanned)/n
@@ -49,9 +48,9 @@ for i in 1:l
         global minid = i; 
     end
 end
-sa.bar(nus, Smeans)
+p = sa.plot(nus, Smeans, label=""); display(p)
 println("Minimal proportion of scanned elements $min found with ν = $(nus[minid])")
- =#
+
 ######## Check sesquickselct! correctness ad devault nu = 0.2843 ########
 #= 
 error = 0; n=1000; T = 500
