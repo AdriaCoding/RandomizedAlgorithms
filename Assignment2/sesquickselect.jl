@@ -57,7 +57,7 @@ end
 #####################################
 # Sesquickselect methods
 # Use optimal value of nu by default
-sesquickselect!(v::AbstractVector, m::Integer) = sesquickselect!(v::AbstractVector, m, 0.2843)
+sesquickselect!(v::AbstractVector, m::Integer) = sesquickselect!(v::AbstractVector, m, 0.265)
 function sesquickselect!(v::AbstractVector, m::Integer, nu)
     inds = axes(v,1)
     if(m < first(inds) || m > last(inds))
