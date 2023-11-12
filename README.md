@@ -26,17 +26,17 @@ First assignment is about calculating π using the classic "throwing-darts" and 
 To test my code you just need to clone the repository and start a Julia REPL session from there. You can check your current working directory via the ```pwd()``` function and change it via ```cd("/path/to/RandomizedAlgorithms")```. 
 
 I created a custom module named **RandomPi** containing all the functions for the assignment. Import it, along with all its dependencies, by typing
-```
+```julia
 include("Assignment1\\main.jl")
 ```
 Now you can execute any of the functions freely
-```
+```julia
 fast_darts(10000)
 plot_everything()
 ```
 And also measure their performance with the macros from BenchmarkTools!
 
-```
+```julia
 N = 10^6
 @btime naive_buffon(N)
 @btime fast_buffon(N)
@@ -50,8 +50,43 @@ Sesquickselect returns the $m$-smallest element of an unsorted array with an ave
 
 For more information about the algorithm read the Assignment and the related papers [1], [2], and [3].
 
-To test my code one has to proceed as with the previous assignment, and import the module named **SelectionAlgorithms** into the REPL via:
+To test my code one has to proceed as with the previous assignment, and import the module named **SelectionAlgorithms** (aliased into "sa") into the REPL via:
 
-```
+```julia
 include("Assignment2\\main.jl")
+```
+You can uncomment the testing scripts in the main.jl file, and run the above command again, or you can do so interactively. You can get a list of the available methods in the module typing "names(sa)", and you should be getting this output:
+```	
+julia> names(sa)      
+12-element Vector{Symb
+ :SelectionAlgorithms 
+ :compute_and_plot    
+ :default_quicksort!  
+ :double_partition!   
+ :empirical_plot      
+ :get_scanned_elements
+ :quickselect!        
+ :select_two_pivots!  
+ :sesquickselect!     
+ :shuffle             
+ :single_partition!   
+ :two_distinct_rng  
+```
+
+As an example, you can test the correctness of the algorithm doing this:
+```julia
+n = 20; i = 4;
+v = shuffle(1:n) # random permutation of [1, 2, ..., 20]
+sesquickselect!(v, i) # sorts 4-th element of v in place
+if (v[i] == i) println("correct ouput"); end
+```
+You can also obtain the number of scanned elements for a certain value of parameter "ν ≡ nu" via
+```julia
+nu = 0.2, scanned_elements = 0 
+sesquickselect!(v, i, nu, scanned_elements)
+```
+Finally, you can reproduce the beautiful plots inside the subfolder plots using
+```julia
+nus = [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]
+compute_and_plot(30000, 100, nus)
 ```

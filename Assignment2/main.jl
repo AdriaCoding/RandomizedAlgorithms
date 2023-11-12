@@ -1,9 +1,11 @@
 module SelectionAlgorithms
 
-export default_quicksort!, adaptative_partition!, 
-get_scanned_elements, empirical_plot, f, shuffe;
+export default_quicksort!, quickselect!, shuffle,
+compute_and_plot, empirical_plot,
+sesquickselect!, single_partition!, double_partition!,
+two_distinct_rng, select_two_pivots!, get_scanned_elements
 
-# Only once, load all the potentilly necessary libraries
+# Only once, load all the potentially necessary libraries
 
 #= import Pkg;
 Pkg.add("BenchmarkTools"); #used to test out performance
@@ -22,7 +24,7 @@ include("theoretical.jl")
 end
 
 import .SelectionAlgorithms as sa
-using .SelectionAlgorithms
+using .SelectionAlgorithms # So you don't have to type "sa."
 
 
 ######## To compute the plots like in the report ########
@@ -38,8 +40,8 @@ sa.empirical_plot(I, Sx, n, nu )
 =#
 
 ######## Obtain very rough approximation of optimal nu , which is 0.265 ########
-n = 300; T = 1000; l = 100
-nus = range(0.25, 0.27, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
+#= n = 30000; T = 100; l = 100
+nus = range(0.2, 0.3, l); Smeans=Array{Float64}(undef, l); min = 10^7; minid = 0
 for i in 1:l
     _, Scanned, _ = sa.get_scanned_elements(n, T, nus[i])
     Smeans[i] = sum(Scanned)/n
@@ -50,7 +52,7 @@ for i in 1:l
 end
 p = sa.plot(nus, Smeans, label=""); display(p)
 println("Minimal proportion of scanned elements $min found with ν = $(nus[minid])")
-
+ =#
 ######## Check sesquickselct! correctness ad devault nu = 0.2843 ########
 #= 
 error = 0; n=1000; T = 500
