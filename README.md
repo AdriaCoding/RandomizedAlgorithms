@@ -90,3 +90,6 @@ Finally, you can reproduce the beautiful plots inside the subfolder plots using
 nus = [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]
 compute_and_plot(30000, 100, nus)
 ```
+
+## Assignment 2 : Sesquickselect algorithm
+The datasets proposed in the assignment are available [here](https://mydisk.cs.upc.edu/s/fDZanwDA8So8My8)
