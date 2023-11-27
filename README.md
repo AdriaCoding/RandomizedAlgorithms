@@ -92,4 +92,8 @@ compute_and_plot(30000, 100, nus)
 ```
 
 ## Assignment 2 : Sesquickselect algorithm
-The datasets proposed in the assignment are available [here](https://mydisk.cs.upc.edu/s/fDZanwDA8So8My8)
+The datasets proposed in the assignment are available [here](https://mydisk.cs.upc.edu/s/fDZanwDA8So8My8).
+
+I should compare the usefulness of [XXhash]( C:\Users\adria\.julia\packages\XXhash\7umf3\src\XXhash.jl) vs [Base/hashing.jl](C:\Users\adria\AppData\Local\Programs\Julia-1.8.1\share\julia\base\hashing.jl)
+
+I found an implementation of Hyperloglog in the package [Porbably.jl](https://juliapackages.com/p/probably)
