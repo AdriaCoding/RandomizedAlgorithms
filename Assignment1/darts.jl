@@ -76,3 +76,4 @@ function fast_pi(N=2^20)
     y = rand(N);
     return 4/N * mycount(x,y);
 end
+compare_impl(2^6)
