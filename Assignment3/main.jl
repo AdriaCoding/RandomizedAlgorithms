@@ -25,9 +25,8 @@ function get_ds_cardinality(obj, filename)
 end
 
 function synthetic_ds(n, N, α)
-    if (n > N) 
-        throw("In synthetic_ds the alphabet has to be smaller than the data stream size. Perhaps switch the arguments order")
-    end
+    n > N ||
+        throw(ArgumentError("In synthetic_ds the alphabet has to be smaller than the data stream size. Perhaps switch the arguments order"))
     alphabet = 1:n
     cn = 0
     for i in 1:n; cn+=i^α; end
