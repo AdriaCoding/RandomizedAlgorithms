@@ -2,6 +2,7 @@ module Cardinality
     export HyperLogLog, MyHyperLogLog
     include("hyperloglog/hyperloglog.jl")
     include("myhyperloglog.jl")
+    include("KMV.jl")
     using BenchmarkTools
     end
     #=
@@ -26,7 +27,7 @@ module Cardinality
 end
 
 function synthetic_ds(n, N, α)
-    n > N ||
+    n < N ||
         throw(ArgumentError("In synthetic_ds the alphabet has to be smaller than the data stream size. Perhaps switch the arguments order"))
     alphabet = 1:n
     cn = 0
@@ -50,10 +51,12 @@ end
 
 
 global HLL_mem = 10 # HyperLogLog will have 2^HLL_mem bytes of memory
+global KMV_k = 100
 global real_N = [] #[3185, 23134, 5893, 5760, 9517, 6319, 8995, 550501, 17620]
 s = Set{String}()
 hll = HyperLogLog{HLL_mem}()
 println(length(hll))
 synthetic_ds(150, 10000, 1)
 @time println(get_ds_cardinality(HyperLogLog{HLL_mem}(), "Assignment3/datasets/S135678.dat"))
+@time println(get_ds_cardinality(MyKMV{KMV_k}(), "Assignment3/datasets/S135678.dat"))
 @time println(get_ds_cardinality(Set{String}(), "Assignment3/datasets/S135678.dat"))
