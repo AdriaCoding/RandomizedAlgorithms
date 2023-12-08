@@ -53,6 +53,7 @@ function α(x::MyHyperLogLog{P}) where {P}
 end
 
 function Base.length(x::MyHyperLogLog{P}) where {P}
+    isempty(x) || return 0
     # Harmonic mean estimates cardinality per bin. There are 2^P = m bins
     harmonic_mean = sizeof(x) / sum(1 / 1 << i for i in x.counts)
     biased_estimate = α(x) * sizeof(x) * harmonic_mean

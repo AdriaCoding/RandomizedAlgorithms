@@ -1,32 +1,37 @@
 import DataStructures: SortedSet
 struct MyKMV{k}
-    values::SortedSet{UInt}
+    values::SortedSet{Float64}
     function MyKMV{k}() where k
         isa(k, Integer) || throw(ArgumentError("k must be an integer"))
-        return new(SortedSet{UInt}(Base.Order.Reverse))
+        return new(SortedSet{Float64}(Base.Order.Reverse))
     end
     function MyKMV{k}(initial_values) where k
         kmv = MyKMV{k}()
-        k == length(initial_values) ||
-            throw(ArgumentError("There must be $k initial_values"))
         for v in initial_values
-            push!(kmv.values, v)
+            push!(kmv, v)
         end
         return kmv
     end
 end
+
 MyKMV() = MyKMV{3}()
-a = MyKMV{3}([0x00, 0x02, 0x01])
-push!(a, 4)
+
 Base.max(kmv::MyKMV) = first(kmv.values)
 
 function Base.push!(kmv::MyKMV{k}, x) where {k}
-    h = hash(x)
+    h = (hash(x)/(1<<63-1))/2
     if length(kmv.values) < k
         insert!(kmv.values, h)
     elseif h < max(kmv)
         insert!(kmv.values, h)
         pop!(kmv.values)
+    end
+    return kmv.values
+end
+
+function Base.push!(kmv::MyKMV, v::AbstractArray)
+    for item in v
+        push!(kmv, item)
     end
     return kmv.values
 end
@@ -37,3 +42,12 @@ function Base.push!(kmv::MyKMV, entries...)
     end
     return kmv.values
 end
+
+Base.length(kmv::MyKMV{k}) where k = (k-1)/max(kmv) 
+
+a = MyKMV{600}([0, 1, 2])
+push!(a, 4)
+N = 10000000
+push!(a, [randn() for i in 1:N])
+println("Error relativo: $(100*abs(length(a)-N)/N) %")
+
