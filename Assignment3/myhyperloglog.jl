@@ -21,7 +21,7 @@ getbin(hll::MyHyperLogLog{P}, x::UInt) where P = x >>> (8 * sizeof(UInt) - P) + 
 # Get number of trailing zeros + 1. We use the mask to prevent number of zeros
 # from being overestimated due to any zeros in the bin part of the UInt
 function getzeros(hll::MyHyperLogLog{P}, x::UInt) where {P}
-    or_mask = ((UInt(1) << P) - 1) << (8 * sizeof(UInt) - P)
+    or_mask = ((UInt(1) << P) - 1) << (8 * sizeof(UInt) - P) #0x111111000000000000 with P ones at the left
     return trailing_zeros(x | or_mask) + 1
 end
 
@@ -53,8 +53,11 @@ function α(x::MyHyperLogLog{P}) where {P}
 end
 
 function Base.length(x::MyHyperLogLog{P}) where {P}
-    # Harmonic mean estimates cardinality per bin. There are 2^P bins
+    # Harmonic mean estimates cardinality per bin. There are 2^P = m bins
     harmonic_mean = sizeof(x) / sum(1 / 1 << i for i in x.counts)
     biased_estimate = α(x) * sizeof(x) * harmonic_mean
-    return round(Int, biased_estimate - bias(x, biased_estimate))
+    return round(Int,  α(x) * sizeof(x) * harmonic_mean)
 end
+
+H = MyHyperLogLog{18}()
+H.counts

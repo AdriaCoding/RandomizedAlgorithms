@@ -1,21 +1,22 @@
 module Cardinality
-export HyperLogLog
-include("hyperloglog/hyperloglog.jl")
-using BenchmarkTools
-end
-#=
-N = 2^8; P = 14
-hll = HyperLogLog{P}()
-for i in 1:N; push!(hll, i); end
-length(hll) - N
- =#
-using .Cardinality
-
-function get_ds_cardinality(obj, filename)
-    # obj has to be empty
-    if length(obj) > 1
-        throw("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío...")
+    export HyperLogLog, MyHyperLogLog
+    include("hyperloglog/hyperloglog.jl")
+    include("myhyperloglog.jl")
+    using BenchmarkTools
     end
+    #=
+    N = 2^8; P = 14
+    hll = HyperLogLog{P}()
+    for i in 1:N; push!(hll, i); end
+    length(hll) - N
+    =#
+    using .Cardinality
+
+    function get_ds_cardinality(obj, filename)
+        # obj has to be empty
+        if length(obj) > 1
+            throw("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío...")
+        end
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
