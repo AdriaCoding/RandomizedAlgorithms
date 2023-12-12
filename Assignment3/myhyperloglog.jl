@@ -10,16 +10,14 @@ struct MyHyperLogLog{P}
         return new(zeros(UInt8, sizeof(MyHyperLogLog{P})))
     end
 end
-
+Base.sizeof(::Type{MyHyperLogLog{P}}) where {P} = 1 << P
+Base.sizeof(x::MyHyperLogLog{P}) where {P} = sizeof(typeof(x))
 MyHyperLogLog() = MyHyperLogLog{14}() # Default value
 
 Base.isempty(x::MyHyperLogLog) = all(i == 0x00 for i in x.counts)
 
-# An UInt-sized hash is split, the first P bits is the bin index, the other bits the observation
 getbin(hll::MyHyperLogLog{P}, x::UInt) where P = x >>> (8 * sizeof(UInt) - P) + 1
 
-# Get number of trailing zeros + 1. We use the mask to prevent number of zeros
-# from being overestimated due to any zeros in the bin part of the UInt
 function getzeros(hll::MyHyperLogLog{P}, x::UInt) where {P}
     or_mask = ((UInt(1) << P) - 1) << (8 * sizeof(UInt) - P) #0x111111000000000000 with P ones at the left
     return trailing_zeros(x | or_mask) + 1
@@ -39,7 +37,6 @@ function Base.push!(hll::MyHyperLogLog, values...)
     return hll
 end
 
-# This corrects for systematic bias in the harmonic mean, see original paper.
 function α(x::MyHyperLogLog{P}) where {P} 
     if P == 4
         return 0.673
@@ -53,12 +50,15 @@ function α(x::MyHyperLogLog{P}) where {P}
 end
 
 function Base.length(x::MyHyperLogLog{P}) where {P}
-    isempty(x) || return 0
-    # Harmonic mean estimates cardinality per bin. There are 2^P = m bins
+    !isempty(x) || return 0
     harmonic_mean = sizeof(x) / sum(1 / 1 << i for i in x.counts)
-    biased_estimate = α(x) * sizeof(x) * harmonic_mean
     return round(Int,  α(x) * sizeof(x) * harmonic_mean)
 end
+#= 
+a = MyHyperLogLog{10}()
+push!(a, 4)
+N = 10000000
+push!(a, [randn() for i in 1:N]...)
+println("N=$N vs estimation=$(length(a)).   Error relativo: $(100*abs(length(a)-N)/N) %")
 
-H = MyHyperLogLog{18}()
-H.counts
+ =#

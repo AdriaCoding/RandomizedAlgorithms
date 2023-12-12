@@ -1,23 +1,18 @@
 module Cardinality
-    export HyperLogLog, MyHyperLogLog
-    include("hyperloglog/hyperloglog.jl")
-    include("myhyperloglog.jl")
-    include("KMV.jl")
-    using BenchmarkTools
-    end
-    #=
-    N = 2^8; P = 14
-    hll = HyperLogLog{P}()
-    for i in 1:N; push!(hll, i); end
-    length(hll) - N
-    =#
-    using .Cardinality
 
-    function get_ds_cardinality(obj, filename)
-        # obj has to be empty
-        if length(obj) > 1
-            throw("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío...")
-        end
+export HyperLogLog, MyHyperLogLog, MyKMV
+
+include("hyperloglog/hyperloglog.jl")
+include("myhyperloglog.jl")
+include("KMV.jl")
+
+using BenchmarkTools, DataStructures
+end
+import .Cardinality as ca
+
+function get_ds_cardinality(obj, filename)
+    # obj has to be empty
+    !isempty(obj) || throw(ArgumentError("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío..."))
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
@@ -49,14 +44,14 @@ function synthetic_ds(n, N, α)
     close(f)
 end
 
-
 global HLL_mem = 10 # HyperLogLog will have 2^HLL_mem bytes of memory
-global KMV_k = 100
+global KMV_k = 1<<HLL_mem
 global real_N = [] #[3185, 23134, 5893, 5760, 9517, 6319, 8995, 550501, 17620]
 s = Set{String}()
-hll = HyperLogLog{HLL_mem}()
-println(length(hll))
+hll = ca.HyperLogLog{HLL_mem}()
+kmv = ca.MyKMV() #
 synthetic_ds(150, 10000, 1)
-@time println(get_ds_cardinality(HyperLogLog{HLL_mem}(), "Assignment3/datasets/S135678.dat"))
-@time println(get_ds_cardinality(MyKMV{KMV_k}(), "Assignment3/datasets/S135678.dat"))
-@time println(get_ds_cardinality(Set{String}(), "Assignment3/datasets/S135678.dat"))
+println("MyH->", get_ds_cardinality(ca.MyHyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
+println("HLL->", get_ds_cardinality(ca.HyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
+println("KMV->", get_ds_cardinality(ca.MyKMV{KMV_k}(), "Assignment3/datasets/D1.dat"))
+println("Set->", get_ds_cardinality(ca.Set{String}(), "Assignment3/datasets/D1.dat"))

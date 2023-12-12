@@ -43,11 +43,17 @@ function Base.push!(kmv::MyKMV, entries...)
     return kmv.values
 end
 
-Base.length(kmv::MyKMV{k}) where k = (k-1)/max(kmv) 
+Base.isempty(kmv::MyKMV) = isempty(kmv.values)
 
-a = MyKMV{600}([0, 1, 2])
+function Base.length(kmv::MyKMV{k}) where k
+    !isempty(kmv) || return 0
+    return round(Int, (k-1)/max(kmv))
+end
+
+#= a = MyKMV{100}([0, 1, 2])
 push!(a, 4)
 N = 10000000
 push!(a, [randn() for i in 1:N])
-println("Error relativo: $(100*abs(length(a)-N)/N) %")
+println("N=$N vs estimation=$(length(a)).   Error relativo: $(100*abs(length(a)-N)/N) %")
 
+ =#
