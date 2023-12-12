@@ -12,7 +12,7 @@ import .Cardinality as ca
 
 function get_ds_cardinality(obj, filename)
     # obj has to be empty
-    !isempty(obj) || throw(ArgumentError("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío..."))
+    isempty(obj) || throw(ArgumentError("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío..."))
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
@@ -55,3 +55,13 @@ println("MyH->", get_ds_cardinality(ca.MyHyperLogLog{HLL_mem}(), "Assignment3/da
 println("HLL->", get_ds_cardinality(ca.HyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
 println("KMV->", get_ds_cardinality(ca.MyKMV{KMV_k}(), "Assignment3/datasets/D1.dat"))
 println("Set->", get_ds_cardinality(ca.Set{String}(), "Assignment3/datasets/D1.dat"))
+
+objs = [("MyHLL", ca.MyHyperLogLog{HLL_mem}()), ("KMV", ca.MyKMV{KMV_k}())]
+filenames = ["Assignment3/datasets/D$i.dat" for i in 1:3]
+
+function compare_table(filenames, objs)
+    for (name, obj) in objs
+        res = get_ds_cardinality(obj, filenames[1])
+    end
+end
+compare_table(filenames, objs)

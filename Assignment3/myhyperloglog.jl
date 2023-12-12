@@ -54,6 +54,9 @@ function Base.length(x::MyHyperLogLog{P}) where {P}
     harmonic_mean = sizeof(x) / sum(1 / 1 << i for i in x.counts)
     return round(Int,  α(x) * sizeof(x) * harmonic_mean)
 end
+
+Base.empty!(x::MyHyperLogLog) = (fill!(x.counts, 0x00); x)
+
 #= 
 a = MyHyperLogLog{10}()
 push!(a, 4)
