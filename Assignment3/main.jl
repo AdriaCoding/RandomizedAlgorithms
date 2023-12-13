@@ -2,17 +2,17 @@ module Cardinality
 
 export HyperLogLog, MyHyperLogLog, MyKMV
 
-include("hyperloglog/hyperloglog.jl")
-include("myhyperloglog.jl")
-include("KMV.jl")
+include("algorithms/hyperloglog.jl")
+include("algorithms/myhyperloglog.jl")
+include("algorithms/KMV.jl")
 
-using BenchmarkTools, DataStructures
+using BenchmarkTools, DataStructures, CSV, Tables
 end
 import .Cardinality as ca
 
 function get_ds_cardinality(obj, filename)
     # obj has to be empty
-    isempty(obj) || throw(ArgumentError("Maquina, Mechatron, gavilan, que el 'obj' no esta vacío..."))
+    if !isempty(obj); empty!(obj); end
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
@@ -47,7 +47,7 @@ end
 global HLL_mem = 10 # HyperLogLog will have 2^HLL_mem bytes of memory
 global KMV_k = 1<<HLL_mem
 global real_N = [] #[3185, 23134, 5893, 5760, 9517, 6319, 8995, 550501, 17620]
-s = Set{String}()
+#= s = Set{String}()
 hll = ca.HyperLogLog{HLL_mem}()
 kmv = ca.MyKMV() #
 synthetic_ds(150, 10000, 1)
@@ -55,13 +55,23 @@ println("MyH->", get_ds_cardinality(ca.MyHyperLogLog{HLL_mem}(), "Assignment3/da
 println("HLL->", get_ds_cardinality(ca.HyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
 println("KMV->", get_ds_cardinality(ca.MyKMV{KMV_k}(), "Assignment3/datasets/D1.dat"))
 println("Set->", get_ds_cardinality(ca.Set{String}(), "Assignment3/datasets/D1.dat"))
-
-objs = [("MyHLL", ca.MyHyperLogLog{HLL_mem}()), ("KMV", ca.MyKMV{KMV_k}())]
-filenames = ["Assignment3/datasets/D$i.dat" for i in 1:3]
-
-function compare_table(filenames, objs)
-    for (name, obj) in objs
-        res = get_ds_cardinality(obj, filenames[1])
+ =#
+function compare_table(nfiles, mem)
+    kmvmem = 1 << mem
+    objs = [Set{String}(),
+        ca.MyHyperLogLog{mem}(),
+        ca.MyKMV{kmvmem}(),
+        ca.HyperLogLog{mem}()]
+    objnames = ["Real" "MyHLL" "KMV" "HLL"] 
+    M = ["D$i" for i in 1:nfiles]
+    filenames = ["Assignment3/datasets/D$i.dat" for i in 1:nfiles]
+    for obj in objs
+        res = map(x->get_ds_cardinality(obj, x), filenames)
+        M = hcat(M, res)
     end
+    M = vcat(["Struct" objnames], M)
+    CSV.write("Assignment3/results/DS_comparison_$mem.csv",
+        Tables.table(M), writeheader=false)
+    return M
 end
-compare_table(filenames, objs)
+compare_table(nfiles, 4)

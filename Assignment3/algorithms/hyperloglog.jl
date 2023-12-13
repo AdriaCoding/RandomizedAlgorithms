@@ -37,7 +37,6 @@ julia> empty!(hll);
 """
 struct HyperLogLog{P}
     counts::Vector{UInt8}
-
     function HyperLogLog{P}() where {P}
         isa(P, Integer) || throw(ArgumentError("P must be integer"))
         (P < 4 || P > 18) && throw(ArgumentError("P must be between 4 and 18"))
@@ -187,6 +186,7 @@ function bias(::HyperLogLog{P}, biased_estimate) where {P}
     biasarray = @inbounds BIAS_ARRAYS[P - 3]
     firstindex = searchsortedfirst(rawarray, biased_estimate)
     # Raw count large, no need for bias correction
+    println(firstindex)
     if firstindex == length(rawarray) + 1
         return 0.0
         # Raw count too small, cannot be corrected. Maybe raise error?
