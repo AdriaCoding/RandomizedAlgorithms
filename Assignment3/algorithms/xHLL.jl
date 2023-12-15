@@ -1,6 +1,6 @@
 # From Flajolet, Philippe; Fusy, Éric; Gandouet, Olivier; Meunier, Frédéric (2007)
 # DOI: 10.1.1.76.4286
-import XXhash
+using XXhash
 struct xHyperLogLog{P}
     counts::Vector{UInt8}
     function xHyperLogLog{P}() where {P}

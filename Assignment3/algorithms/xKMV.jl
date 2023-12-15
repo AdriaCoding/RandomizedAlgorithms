@@ -1,5 +1,5 @@
 import DataStructures: SortedSet
-import XXhash
+using XXhash
 struct xKMV{k}
     values::SortedSet{Float64}
     function xKMV{k}() where k

@@ -91,9 +91,13 @@ nus = [0.1, 0.2, 0.265, 0.3, 0.4, 0.5]
 compute_and_plot(30000, 100, nus)
 ```
 
-## Assignment 2 : Sesquickselect algorithm
+## Assignment 3 : Cardinality estimation
 The datasets proposed in the assignment are available [here](https://mydisk.cs.upc.edu/s/fDZanwDA8So8My8).
 
 I should compare the usefulness of [XXhash]( C:\Users\adria\.julia\packages\XXhash\7umf3\src\XXhash.jl) vs [Base/hashing.jl](C:\Users\adria\AppData\Local\Programs\Julia-1.8.1\share\julia\base\hashing.jl)
 
-I found an implementation of Hyperloglog in the package [Pro]bably.jl](https://juliapackages.com/p/probably)
+I found an implementation of Hyperloglog in the package [Probably.jl](https://juliapackages.com/p/probably)
+
+## DEPENDENCIES ISSUES
+If you get any error pointing to a missing package, please run the script 'dependencies.jl' as that will 
+try to install all the packages necessary for all three assignments.

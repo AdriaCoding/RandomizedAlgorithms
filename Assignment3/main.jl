@@ -2,17 +2,21 @@ module Cardinality
 
 export HyperLogLog, MyHyperLogLog, MyKMV
 
+import Pkg; Pkg.add("CSV"), Pkg.add("Tables"), Pkg.add("XXhash")
+using BenchmarkTools, DataStructures, CSV, Tables, XXhash
+
 include("algorithms/hyperloglog.jl")
 include("algorithms/myhyperloglog.jl")
 include("algorithms/KMV.jl")
+include("algorithms/xKMV.jl")
+include("algorithms/xHLL.jl")
 
-using BenchmarkTools, DataStructures, CSV, Tables
 end
 import .Cardinality as ca
 
 function get_ds_cardinality(obj, filename)
     # obj has to be empty
-    if !isempty(obj); empty!(obj); end
+    empty!(obj)
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
@@ -47,21 +51,23 @@ end
 global HLL_mem = 10 # HyperLogLog will have 2^HLL_mem bytes of memory
 global KMV_k = 1<<HLL_mem
 global real_N = [] #[3185, 23134, 5893, 5760, 9517, 6319, 8995, 550501, 17620]
-#= s = Set{String}()
+ s = Set{String}()
 hll = ca.HyperLogLog{HLL_mem}()
 kmv = ca.MyKMV() #
 synthetic_ds(150, 10000, 1)
+println("Cardinality estimation fot the first dataset (real value = $(get_ds_cardinality(ca.Set{String}(), "Assignment3/datasets/D1.dat")))")
+
 println("MyH->", get_ds_cardinality(ca.MyHyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
 println("HLL->", get_ds_cardinality(ca.HyperLogLog{HLL_mem}(), "Assignment3/datasets/D1.dat"))
 println("KMV->", get_ds_cardinality(ca.MyKMV{KMV_k}(), "Assignment3/datasets/D1.dat"))
-println("Set->", get_ds_cardinality(ca.Set{String}(), "Assignment3/datasets/D1.dat"))
- =#
+
 function compare_table(nfiles, mem)
     kmvmem = 1 << mem
     objs = [Set{String}(),
+        ca.HyperLogLog{mem}(),
         ca.MyHyperLogLog{mem}(),
         ca.MyKMV{kmvmem}(),
-        ca.HyperLogLog{mem}()]
+        ]
     objnames = ["Real" "MyHLL" "KMV" "HLL"] 
     M = ["D$i" for i in 1:nfiles]
     filenames = ["Assignment3/datasets/D$i.dat" for i in 1:nfiles]
@@ -74,4 +80,6 @@ function compare_table(nfiles, mem)
         Tables.table(M), writeheader=false)
     return M
 end
+nfiles = 9
 compare_table(nfiles, 4)
+compare_table(nfiles, 18)

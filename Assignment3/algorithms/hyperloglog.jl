@@ -186,7 +186,6 @@ function bias(::HyperLogLog{P}, biased_estimate) where {P}
     biasarray = @inbounds BIAS_ARRAYS[P - 3]
     firstindex = searchsortedfirst(rawarray, biased_estimate)
     # Raw count large, no need for bias correction
-    println(firstindex)
     if firstindex == length(rawarray) + 1
         return 0.0
         # Raw count too small, cannot be corrected. Maybe raise error?
