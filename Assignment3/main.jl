@@ -2,7 +2,7 @@ module Cardinality
 
 export HyperLogLog, MyHyperLogLog, MyKMV
 
-import Pkg; Pkg.add("CSV"), Pkg.add("Tables"), Pkg.add("XXhash")
+#import Pkg; Pkg.add("CSV"), Pkg.add("Tables"), Pkg.add("XXhash")
 using BenchmarkTools, DataStructures, CSV, Tables, XXhash
 
 include("algorithms/hyperloglog.jl")
@@ -16,7 +16,7 @@ import .Cardinality as ca
 
 function get_ds_cardinality(obj, filename)
     # obj has to be empty
-    empty!(obj)
+    !isempty(obj) || empty!(obj)
     open(filename) do file
         for word in eachline(file)
             push!(obj, word)
@@ -67,8 +67,10 @@ function compare_table(nfiles, mem)
         ca.HyperLogLog{mem}(),
         ca.MyHyperLogLog{mem}(),
         ca.MyKMV{kmvmem}(),
+        ca.xHyperLogLog{mem}(),
+        ca.xKMV{kmvmem}()
         ]
-    objnames = ["Real" "MyHLL" "KMV" "HLL"] 
+    objnames = ["Real" "HLL" "myHLL" "KMV" "xHLL" "xKMV"] 
     M = ["D$i" for i in 1:nfiles]
     filenames = ["Assignment3/datasets/D$i.dat" for i in 1:nfiles]
     for obj in objs

@@ -50,7 +50,7 @@ function Base.length(kmv::MyKMV{k}) where k
     return round(Int, (k-1)/max(kmv))
 end
 
-Base.empty!(kmv::MyKMV) = (empty!(kmv.values); kmv)
+Base.empty!(kmv::MyKMV{k}) where k = (empty!(kmv.values); kmv)
 #= a = MyKMV{100}([0, 1, 2])
 push!(a, 4)
 N = 10000000
